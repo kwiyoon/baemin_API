@@ -1,7 +1,7 @@
 package kuit.server.common.response;
 
-import kuit.server.common.response.status.ResponseStatus;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import kuit.server.common.response.status.ResponseStatus;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

@@ -1,8 +1,8 @@
 package kuit.server.common.exception_handler;
 
+import jakarta.annotation.Priority;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseErrorResponse;
-import jakarta.annotation.Priority;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

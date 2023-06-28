@@ -1,12 +1,11 @@
 package kuit.server.common.exception_handler;
 
+import jakarta.validation.ConstraintViolationException;
 import kuit.server.common.exception.BadRequestException;
 import kuit.server.common.exception.InternalServerErrorException;
 import kuit.server.common.response.BaseErrorResponse;
-import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,7 +39,7 @@ public class BaseExceptionControllerAdvice {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public BaseErrorResponse handle_HttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.error("[handle_HttpRequestMethodNotSupportedException]", e);
-        return new BaseErrorResponse(METHOD_NOT_SUPPORTED);
+        return new BaseErrorResponse(METHOD_NOT_ALLOWED);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -1,7 +1,7 @@
 package kuit.server.common.exception_handler;
 
-import kuit.server.common.response.BaseErrorResponse;
 import jakarta.annotation.Priority;
+import kuit.server.common.response.BaseErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;

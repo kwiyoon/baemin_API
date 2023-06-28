@@ -38,3 +38,6 @@ out/
 
 /src/main/java/kuit/server/config/secret
 *.pem
+
+### temp code ###
+/src/main/java/**/temp/

@@ -1,10 +1,13 @@
 spring:
   profiles:
     group:
+      "prod": "prodDB, prodPort, secret, web-mvc"
       "local": "localDB, devPort, secret, web-mvc"
       "dev": "devDB, devPort, secret, web-mvc"
-      "prod": "prodDB, prodPort, secret, web-mvc"
-
+          # 로컬은 개인 컴퓨터에서 돌아가는 거고
+          # 개발 서버는 aws ec2를 통해서 돌아갈 것이기 때문에
+          # 즉, 다른 환경에서 돌아갈 것이므로
+          # 같은 포트 번호(devPort)를 할당해줘도 상관 x
 ---
 
 spring:
