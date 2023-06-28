@@ -12,8 +12,7 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.PASSWORD_NO_MATCH;
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.TOKEN_MISMATCH;
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
 
 @Slf4j
 @Service
@@ -28,12 +27,19 @@ public class AuthService {
         log.info("[AuthService.login]");
 
         String email = authRequest.getEmail();
-        long userId = userDao.getUserIdByEmail(email);
 
-        // TODO: 1. 비밀번호 일치 확인
+        // TODO: 1. 이메일 유효성 확인
+        long userId;
+        try {
+            userId = userDao.getUserIdByEmail(email);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            throw new UserException(EMAIL_NOT_FOUND);
+        }
+
+        // TODO: 2. 비밀번호 일치 확인
         validatePassword(authRequest.getPassword(), userId);
 
-        // TODO: 2. JWT 갱신
+        // TODO: 3. JWT 갱신
         String updatedJwt = jwtTokenProvider.createToken(email, userId);
 
         return new LoginResponse(userId, updatedJwt);
