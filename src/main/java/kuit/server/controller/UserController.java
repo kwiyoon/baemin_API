@@ -38,19 +38,6 @@ public class UserController {
     }
 
     /**
-     * 로그인
-     */
-    @PostMapping("/login")
-    public BaseResponse<PostLoginResponse> login(@Validated @RequestBody PostLoginRequest postLoginRequest, BindingResult bindingResult,
-                                                 @PreAuthorize long userId) {
-        log.info("[UserController.login] userId={}", userId);
-        if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
-        }
-        return new BaseResponse<>(userService.login(postLoginRequest, userId));
-    }
-
-    /**
      * 회원 휴면
      */
     @PatchMapping("/{userId}/dormant")
