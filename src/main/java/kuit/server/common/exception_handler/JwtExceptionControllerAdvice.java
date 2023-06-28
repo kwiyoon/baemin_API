@@ -2,7 +2,12 @@ package kuit.server.common.exception_handler;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.annotation.Priority;
-import kuit.server.common.exception.jwt.*;
+import kuit.server.common.exception.jwt.bad_request.JwtBadRequestException;
+import kuit.server.common.exception.jwt.bad_request.JwtNoTokenException;
+import kuit.server.common.exception.jwt.bad_request.JwtUnsupportedTokenException;
+import kuit.server.common.exception.jwt.unauthorized.JwtExpiredTokenException;
+import kuit.server.common.exception.jwt.unauthorized.JwtInvalidTokenException;
+import kuit.server.common.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
 import kuit.server.common.response.BaseErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,14 +21,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class JwtExceptionControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({JwtNoTokenException.class, JwtUnsupportedTokenException.class})
-    public BaseErrorResponse handle_JwtBadRequestException(JwtNoTokenException e) {
+    @ExceptionHandler(JwtBadRequestException.class)
+    public BaseErrorResponse handle_JwtBadRequestException(JwtBadRequestException e) {
         log.error("[handle_JwtBadRequestException]", e);
         return new BaseErrorResponse(e.getExceptionStatus());
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler({JwtExpiredTokenException.class, JwtInvalidTokenException.class, JwtMalformedTokenException.class, JwtUnauthorizedTokenException.class, JwtException.class})
+    @ExceptionHandler(JwtUnauthorizedTokenException.class)
     public BaseErrorResponse handle_JwtUnauthorizedException(JwtUnauthorizedTokenException e) {
         log.error("[handle_JwtUnauthorizedException]", e);
         return new BaseErrorResponse(e.getExceptionStatus());
