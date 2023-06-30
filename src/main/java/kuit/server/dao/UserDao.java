@@ -100,7 +100,7 @@ public class UserDao {
                         rs.getString("nickname"),
                         rs.getString("profile_image"),
                         rs.getString("status"),
-                        rs.getString("user_id"))
+                        rs.getLong("user_id"))
         );
     }
 
