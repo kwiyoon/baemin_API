@@ -79,7 +79,7 @@ public class UserController {
             @RequestParam(required = false, defaultValue = "") String nickName,
             @RequestParam(required = false, defaultValue = "") String email,
             @RequestParam(required = false, defaultValue = "active") String status,
-            @RequestParam(required = false, defaultValue = "") Long lastId) {
+            @RequestParam(required = false, defaultValue = "1") Long lastId) {
         log.info("[UserController.getUsers]");
         if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
             throw new UserException(INVALID_USER_STATUS);
