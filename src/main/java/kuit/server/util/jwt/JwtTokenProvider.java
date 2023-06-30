@@ -17,37 +17,51 @@ import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
 public class JwtTokenProvider {
 
     @Value("${secret.jwt-secret-key}")
-    private String JWT_SECRET_KEY;
+    private String SECRET_KEY;
 
-    @Value("${secret.jwt-expired-in}")
-    private long JWT_EXPIRED_IN;
+    @Value("${secret.at-expired-in}")
+    private long AT_EXPIRED_IN;
 
-    public String createToken(String principal, long userId) {
-        log.info("JWT key={}", JWT_SECRET_KEY);
+    @Value("${secret.rt-expired-in}")
+    private long RT_EXPIRED_IN;
 
-        Claims claims = Jwts.claims().setSubject(principal);
+    public String createToken(Claims claims, long EXPIRED_TIME) {
+        log.info("JWT key={}", SECRET_KEY);
+
         Date now = new Date();
-        Date validity = new Date(now.getTime() + JWT_EXPIRED_IN);
+        Date validity = new Date(now.getTime() + EXPIRED_TIME);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .claim("userId", userId)
-                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
+    }
+
+    public String createAccessToken(String email, long userId) {
+        Claims claims = Jwts.claims();
+        claims.put("email", email);
+        claims.put("userId", userId);
+        return createToken(claims, AT_EXPIRED_IN);
+    }
+
+    public String createRefreshToken(String email) {
+        Claims claims = Jwts.claims();
+        claims.put("email", email);
+        return createToken(claims, RT_EXPIRED_IN);
+
     }
 
     public boolean isExpiredToken(String token) throws JwtInvalidTokenException {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(JWT_SECRET_KEY).build()
+                    .setSigningKey(SECRET_KEY).build()
                     .parseClaimsJws(token);
             return claims.getBody().getExpiration().before(new Date());
 
         } catch (ExpiredJwtException e) {
             return true;
-
         } catch (UnsupportedJwtException e) {
             throw new JwtUnsupportedTokenException(UNSUPPORTED_TOKEN_TYPE);
         } catch (MalformedJwtException e) {
@@ -55,14 +69,14 @@ public class JwtTokenProvider {
         } catch (IllegalArgumentException e) {
             throw new JwtInvalidTokenException(INVALID_TOKEN);
         } catch (JwtException e) {
-            log.error("[JwtTokenProvider.validateAccessToken]", e);
+            log.error("[JwtTokenProvider.isExpiredToken]", e);
             throw e;
         }
     }
 
     public String getPrincipal(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(JWT_SECRET_KEY).build()
+                .setSigningKey(SECRET_KEY).build()
                 .parseClaimsJws(token)
                 .getBody().getSubject();
     }

@@ -48,6 +48,15 @@ public class UserDao {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
+    public void setRefreshToken(long user_id, String refresh_token){
+        log.info("rt = {}", refresh_token);
+        String sql = "update user set refresh_token=:refresh_token where user_id=:user_id";
+        Map<String, Object> param = Map.of(
+                "refresh_token", refresh_token,
+                "user_id", user_id);
+        jdbcTemplate.update(sql, param);
+    }
+
     public int modifyUserStatus_dormant(long userId) {
         String sql = "update user set status=:status where user_id=:user_id";
         Map<String, Object> param = Map.of(

@@ -5,6 +5,7 @@ import kuit.server.common.exception.jwt.unauthorized.JwtUnauthorizedTokenExcepti
 import kuit.server.dao.UserDao;
 import kuit.server.dto.auth.LoginRequest;
 import kuit.server.dto.auth.LoginResponse;
+import kuit.server.dto.auth.JWT;
 import kuit.server.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,10 +40,14 @@ public class AuthService {
         // TODO: 2. 비밀번호 일치 확인
         validatePassword(authRequest.getPassword(), userId);
 
-        // TODO: 3. JWT 갱신
-        String updatedJwt = jwtTokenProvider.createToken(email, userId);
+        // TODO: 3. JWT - AccessToken 갱신
+        String updatedAT = jwtTokenProvider.createAccessToken(email, userId);
 
-        return new LoginResponse(userId, updatedJwt);
+        // TODO: 4. JWT - RefreshToken 갱신
+        String updatedRT = jwtTokenProvider.createRefreshToken(email);
+
+
+        return new LoginResponse(userId, new JWT(updatedAT, updatedRT));
     }
 
     private void validatePassword(String password, long userId) {
