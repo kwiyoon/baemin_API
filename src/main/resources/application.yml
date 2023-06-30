@@ -91,7 +91,8 @@ spring:
 
 secret:
   jwt-secret-key: ${JWT_SECRET_KEY}
-  jwt-expired-in: ${JWT_EXPIRED_IN}
+  at-expired-in: ${AT_EXPIRED_IN}
+  rt-expired-in: ${RT_EXPIRED_IN}
 
 ---
 

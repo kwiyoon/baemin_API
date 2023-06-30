@@ -41,7 +41,7 @@ public class UserController {
      * 회원 휴면
      */
     @PatchMapping("/{userId}/dormant")
-    public BaseResponse<Object> modifyUserStatus_dormant(@PathVariable long userId) {
+    public BaseResponse<Object> modifyUserStatus_dormant(@PreAuthorize @PathVariable long userId) {
         log.info("[UserController.modifyUserStatus_dormant]");
         userService.modifyUserStatus_dormant(userId);
         return new BaseResponse<>(null);
@@ -51,7 +51,7 @@ public class UserController {
      * 회원 탈퇴
      */
     @PatchMapping("/{userId}/deleted")
-    public BaseResponse<Object> modifyUserStatus_deleted(@PathVariable long userId) {
+    public BaseResponse<Object> modifyUserStatus_deleted(@PreAuthorize @PathVariable long userId) {
         log.info("[UserController.modifyUserStatus_delete]");
         userService.modifyUserStatus_deleted(userId);
         return new BaseResponse<>(null);
@@ -61,7 +61,7 @@ public class UserController {
      * 닉네임 변경
      */
     @PatchMapping("/{userId}/nickname")
-    public BaseResponse<String> modifyNickname(@PathVariable long userId,
+    public BaseResponse<String> modifyNickname(@PreAuthorize @PathVariable long userId,
                                                @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
         log.info("[UserController.modifyNickname]");
         if (bindingResult.hasErrors()) {
@@ -76,14 +76,15 @@ public class UserController {
      */
     @GetMapping("")
     public BaseResponse<List<GetUserResponse>> getUsers(
-            @RequestParam(required = false, defaultValue = "") String nickname,
+            @RequestParam(required = false, defaultValue = "") String nickName,
             @RequestParam(required = false, defaultValue = "") String email,
-            @RequestParam(required = false, defaultValue = "active") String status) {
+            @RequestParam(required = false, defaultValue = "active") String status,
+            @RequestParam(required = false, defaultValue = "1") Long lastId) {
         log.info("[UserController.getUsers]");
         if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
             throw new UserException(INVALID_USER_STATUS);
         }
-        return new BaseResponse<>(userService.getUsers(nickname, email, status));
+        return new BaseResponse<>(userService.getUsers(nickName, email, status, lastId));
     }
 
 }

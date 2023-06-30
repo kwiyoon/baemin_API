@@ -5,8 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LoginResponse {
-
-    private long userId;
-    private JWT jwt;
+public class JWT {
+    private String accessToken;
+    private String refreshToken;
 }
