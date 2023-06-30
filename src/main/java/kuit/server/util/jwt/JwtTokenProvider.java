@@ -1,9 +1,11 @@
 package kuit.server.util.jwt;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.SignatureException;
 import kuit.server.common.exception.jwt.unauthorized.JwtInvalidTokenException;
 import kuit.server.common.exception.jwt.unauthorized.JwtMalformedTokenException;
 import kuit.server.common.exception.jwt.bad_request.JwtUnsupportedTokenException;
+import kuit.server.common.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -39,10 +41,9 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String createAccessToken(String email, long userId) {
+    public String createAccessToken(String email) {
         Claims claims = Jwts.claims();
         claims.put("email", email);
-        claims.put("userId", userId);
         return createToken(claims, AT_EXPIRED_IN);
     }
 
@@ -66,7 +67,9 @@ public class JwtTokenProvider {
             throw new JwtUnsupportedTokenException(UNSUPPORTED_TOKEN_TYPE);
         } catch (MalformedJwtException e) {
             throw new JwtMalformedTokenException(MALFORMED_TOKEN);
-        } catch (IllegalArgumentException e) {
+        } catch (SignatureException e){
+            throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
+        } catch (IllegalArgumentException e){
             throw new JwtInvalidTokenException(INVALID_TOKEN);
         } catch (JwtException e) {
             log.error("[JwtTokenProvider.isExpiredToken]", e);
@@ -75,10 +78,11 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
-        return Jwts.parserBuilder()
+        String jwt = Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY).build()
                 .parseClaimsJws(token)
-                .getBody().getSubject();
+                .getBody().get("email", String.class);
+        return jwt;
     }
 
 }

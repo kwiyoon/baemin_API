@@ -41,7 +41,7 @@ public class AuthService {
         validatePassword(authRequest.getPassword(), userId);
 
         // TODO: 3. JWT - AccessToken 갱신
-        String updatedAT = jwtTokenProvider.createAccessToken(email, userId);
+        String updatedAT = jwtTokenProvider.createAccessToken(email);
 
         // TODO: 4. JWT - RefreshToken 갱신
         String updatedRT = jwtTokenProvider.createRefreshToken(email);
