@@ -78,9 +78,9 @@ public class UserService {
         }
     }
 
-    public List<GetUserResponse> getUsers(String nickname, String email, String status) {
+    public List<GetUserResponse> getUsers(String nickname, String email, String status, Long lastId) {
         log.info("[UserService.getUsers]");
-        return userDao.getUsers(nickname, email, status);
+        return userDao.getUsers(nickname, email, status, lastId);
     }
 
     private void validateEmail(String email) {
