@@ -1,11 +1,16 @@
 package kuit.server.service;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import kuit.server.common.exception.UserException;
+import kuit.server.common.exception.jwt.unauthorized.JwtInvalidTokenException;
 import kuit.server.common.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
 import kuit.server.dao.UserDao;
 import kuit.server.dto.auth.LoginRequest;
 import kuit.server.dto.auth.LoginResponse;
 import kuit.server.dto.auth.JWT;
+import kuit.server.dto.auth.RefreshRequest;
 import kuit.server.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,5 +69,18 @@ public class AuthService {
             throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
         }
     }
+
+    public JWT refresh(RefreshRequest refreshRequest) {
+        String email = jwtTokenProvider.validateRefreshToken(refreshRequest);
+        if(email == null){
+            throw new JwtInvalidTokenException(INVALID_TOKEN);
+        }
+        String newRefreshToken = jwtTokenProvider.createRefreshToken(email);
+        String newAccessToken = jwtTokenProvider.createAccessToken(email);
+        userDao.setRefreshToken(email, newRefreshToken);
+
+        return new JWT(newRefreshToken, newAccessToken);
+    }
+
 
 }

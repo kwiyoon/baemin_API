@@ -45,7 +45,7 @@ public class UserService {
         String accessToken = jwtTokenProvider.createAccessToken(postUserRequest.getEmail());
         String refreshToken = jwtTokenProvider.createRefreshToken(postUserRequest.getEmail());
 
-        userDao.setRefreshToken(userId, refreshToken);
+        userDao.setRefreshToken(postUserRequest.getEmail(), refreshToken);
 
         return new PostUserResponse(userId, new JWT(accessToken, refreshToken));
     }
