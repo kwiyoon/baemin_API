@@ -16,6 +16,6 @@ public class GetUserResponse {
     private String nickname;
     private String profileImage;
     private String status;
-    private String user_id;
+    private long user_id;
 
 }
