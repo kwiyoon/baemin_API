@@ -51,6 +51,8 @@ public class AuthService {
         // TODO: 4. JWT - RefreshToken 갱신
         String updatedRT = jwtTokenProvider.createRefreshToken(email);
 
+        userDao.setRefreshToken(email, updatedRT);
+
 
         return new LoginResponse(userId, new JWT(updatedAT, updatedRT));
     }
@@ -75,11 +77,12 @@ public class AuthService {
         if(email == null){
             throw new JwtInvalidTokenException(INVALID_TOKEN);
         }
-        String newRefreshToken = jwtTokenProvider.createRefreshToken(email);
-        String newAccessToken = jwtTokenProvider.createAccessToken(email);
-        userDao.setRefreshToken(email, newRefreshToken);
+        String updatedAT = jwtTokenProvider.createAccessToken(email);
+        String updatedRT = jwtTokenProvider.createRefreshToken(email);
 
-        return new JWT(newRefreshToken, newAccessToken);
+        userDao.setRefreshToken(email, updatedRT);
+
+        return new JWT(updatedAT, updatedRT);
     }
 
 
