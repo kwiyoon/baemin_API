@@ -1,11 +1,16 @@
 package kuit.server.service;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import kuit.server.common.exception.UserException;
+import kuit.server.common.exception.jwt.unauthorized.JwtInvalidTokenException;
 import kuit.server.common.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
 import kuit.server.dao.UserDao;
 import kuit.server.dto.auth.LoginRequest;
 import kuit.server.dto.auth.LoginResponse;
 import kuit.server.dto.auth.JWT;
+import kuit.server.dto.auth.RefreshRequest;
 import kuit.server.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +51,8 @@ public class AuthService {
         // TODO: 4. JWT - RefreshToken 갱신
         String updatedRT = jwtTokenProvider.createRefreshToken(email);
 
+        userDao.setRefreshToken(email, updatedRT);
+
 
         return new LoginResponse(userId, new JWT(updatedAT, updatedRT));
     }
@@ -64,5 +71,19 @@ public class AuthService {
             throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
         }
     }
+
+    public JWT refresh(RefreshRequest refreshRequest) {
+        String email = jwtTokenProvider.validateRefreshToken(refreshRequest);
+        if(email == null){
+            throw new JwtInvalidTokenException(INVALID_TOKEN);
+        }
+        String updatedAT = jwtTokenProvider.createAccessToken(email);
+        String updatedRT = jwtTokenProvider.createRefreshToken(email);
+
+        userDao.setRefreshToken(email, updatedRT);
+
+        return new JWT(updatedAT, updatedRT);
+    }
+
 
 }

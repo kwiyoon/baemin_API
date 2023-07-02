@@ -6,6 +6,10 @@ import kuit.server.common.exception.jwt.unauthorized.JwtInvalidTokenException;
 import kuit.server.common.exception.jwt.unauthorized.JwtMalformedTokenException;
 import kuit.server.common.exception.jwt.bad_request.JwtUnsupportedTokenException;
 import kuit.server.common.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
+import kuit.server.dao.UserDao;
+import kuit.server.dto.auth.JWT;
+import kuit.server.dto.auth.RefreshRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,6 +20,7 @@ import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     @Value("${secret.jwt-secret-key}")
@@ -78,11 +83,25 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
-        String jwt = Jwts.parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY).build()
                 .parseClaimsJws(token)
                 .getBody().get("email", String.class);
-        return jwt;
+    }
+
+    private final UserDao userDao;
+    public String validateRefreshToken(RefreshRequest refreshRequest) {
+        String refreshToken = refreshRequest.getRefreshToken();
+        isExpiredToken(refreshToken);
+
+        if(!userDao.hasRefreshToken(refreshToken)){
+            throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
+        }
+
+        Jws<Claims> claims= Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY).build()
+                .parseClaimsJws(refreshToken);
+        return claims.getBody().get("email", String.class);
     }
 
 }

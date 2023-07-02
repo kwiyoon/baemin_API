@@ -49,13 +49,20 @@ public class UserDao {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
-    public void setRefreshToken(long user_id, String refresh_token){
+    public void setRefreshToken(String email, String refresh_token){
         log.info("rt = {}", refresh_token);
-        String sql = "update user set refresh_token=:refresh_token where user_id=:user_id";
+        String sql = "update user set refresh_token=:refresh_token where email=:email";
         Map<String, Object> param = Map.of(
                 "refresh_token", refresh_token,
-                "user_id", user_id);
+                "email", email);
         jdbcTemplate.update(sql, param);
+    }
+
+    public boolean hasRefreshToken(String refresh_token){
+        log.info("UserDao.hasRefreshToken({})", refresh_token);
+        String sql = "select exists(select user_id from user where refresh_token=:refresh_token)";
+        Map<String, Object> param = Map.of("refresh_token", refresh_token);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 
     public int modifyUserStatus_dormant(long userId) {
