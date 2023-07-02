@@ -1,5 +1,6 @@
 package kuit.server.controller;
 
+import kuit.server.common.exception.StoreException;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.store.GetStoreResponse;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_STORE_STATUS;
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_STATUS;
 
 @Slf4j
@@ -29,7 +31,7 @@ public class StoreContoller {
             @RequestParam(required = false, defaultValue = "1") Long lastId) {
         log.info("[StoreContoller.getStores]");
         if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
-            throw new UserException(INVALID_USER_STATUS);
+            throw new StoreException(INVALID_STORE_STATUS);
         }
         return new BaseResponse<>(storeService.getStores(storeName, status, lastId));
     }
