@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # JAR 파일명을 deploy.log에 기록.
-BUILD_JAR=$(ls /home/ec2-user/build/*.jar)
+BUILD_JAR=$(ls /home/ec2-user/zzoni/build/libs/*.jar)
 JAR_NAME=$(basename $BUILD_JAR)
 echo "> build 파일명: $JAR_NAME" >> /home/ec2-user/deploy.log
 
