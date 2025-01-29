@@ -3,7 +3,7 @@ os: linux
 files:
   # 서버의 destination 에  source 파일 배포
   - source:  /
-    destination: /home/ec2-user/build/
+    destination: /home/ec2-user/zzoni
     overwrite: yes
 
 permissions:
