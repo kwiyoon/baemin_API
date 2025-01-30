@@ -26,4 +26,4 @@ fi
 # 새로운 JAR 파일 배포 및 실행
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 echo "> DEPLOY_JAR 배포"    >> /home/ec2-user/zzoni/deploy.log
-nohup java -Dspring.profiles.active=dev -jar $DEPLOY_JAR >> /home/ec2-user/zzoni/deploy.log >/home/ec2-user/zzoni/deploy_err.log &
+nohup java -Dspring.profiles.active=dev -jar $DEPLOY_JAR > /dev/null 2> /dev/null < /dev/null &
