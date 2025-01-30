@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # JAR 파일명을 deploy.log에 기록.
-BUILD_JAR=$(ls /home/ec2-user/zzoni/build/libs/*.jar | grep -nv 'plain')
+JAR_DIR_PATH=/home/ec2-user/zzoni/build/libs/
+BUILD_JAR=$(ls $JAR_DIR_PATH*.jar | grep -nv 'plain')
 JAR_NAME=$(basename $BUILD_JAR)
 echo "> build 경로: $BUILD_JAR" >> /home/ec2-user/zzoni/deploy.log
 echo "> build 파일명: $JAR_NAME" >> /home/ec2-user/zzoni/deploy.log
@@ -9,7 +10,8 @@ echo "> build 파일명: $JAR_NAME" >> /home/ec2-user/zzoni/deploy.log
 # 빌드된 JAR 파일을 /home/ec2-user/ 디렉토리로 복사
 echo "> build 파일 복사" >> /home/ec2-user/zzoni/deploy.log
 DEPLOY_PATH=/home/ec2-user/zzoni/
-cp $BUILD_JAR $DEPLOY_PATH
+#cp $BUILD_JAR $DEPLOY_PATH
+cp $JAR_DIR_PATH$JAR_NAME $DEPLOY_PATH
 
 echo "> 현재 실행중인 애플리케이션 pid 확인" >> /home/ec2-user/zzoni/deploy.log
 CURRENT_PID=$(pgrep -f $JAR_NAME)
