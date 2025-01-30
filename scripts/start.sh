@@ -3,6 +3,7 @@
 # JAR 파일명을 deploy.log에 기록.
 BUILD_JAR=$(ls /home/ec2-user/zzoni/build/libs/*.jar | grep -nv 'plain')
 JAR_NAME=$(basename $BUILD_JAR)
+echo "> build 경로: $BUILD_JAR" >> /home/ec2-user/zzoni/deploy.log
 echo "> build 파일명: $JAR_NAME" >> /home/ec2-user/zzoni/deploy.log
 
 # 빌드된 JAR 파일을 /home/ec2-user/ 디렉토리로 복사
