@@ -16,5 +16,3 @@ hooks:
   # 배포 후 실행될 스크립트(start.sh)
   ApplicationStart:
     - location: scripts/start.sh
-      timeout: 60
-      runas: ec2-user
