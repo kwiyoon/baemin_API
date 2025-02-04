@@ -2,9 +2,9 @@ name: main branch CI/CD process
 
 on:
   push:
-    branches: "main"
+    branches: "dev"
   pull_request:
-    branches: "main"
+    branches: "dev"
 
 # 환경변수 설정
 env:
